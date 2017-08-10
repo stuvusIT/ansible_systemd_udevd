@@ -33,11 +33,11 @@
     owner: root
     group: root
   when: udevd_rules is defined
-  notify: Trigger udev
+  notify: Trigger udev reload
 
 - name: Remove custom rules
   file:
     path: /etc/udev/rules.d/ansible.rules
     state: absent
   when: udevd_rules is not defined
-  notify: Trigger udev
+  notify: Trigger udev reload
