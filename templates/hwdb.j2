@@ -1,0 +1,21 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+# {{ ansible_managed }}
+
+{% for record in udevd_hwdb_entries %}
+
+	{% if record.matches is iterable and record.matches is not string %}
+		{% for match in record.matches %}
+{{ match }}
+		{% endfor %}
+	{% else %}
+{{ record.matches }}
+	{% endif %}
+
+	{%- if record.properties is iterable and record.properties is not string %}
+		{% for property in record.properties %}
+ {{ property }}
+		{% endfor %}
+	{% else %}
+ {{ record.properties }}
+	{% endif %}
+{% endfor %}
