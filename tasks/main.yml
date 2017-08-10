@@ -1,0 +1,43 @@
+---
+- name: Configure systemd-udevd
+  template:
+    src: udev.conf.j2
+    dest: /etc/udev/udev.conf
+    mode: 0644
+    owner: root
+    group: root
+  notify: Restart systemd-udevd
+
+- name: Create hwdb entries
+  template:
+    src: hwdb.j2
+    dest: /etc/udev/hwdb.d/ansible.hwdb
+    mode: 0644
+    owner: root
+    group: root
+  when: udevd_hwdb_entries is defined
+  notify: Rebuild hwdb
+
+- name: Remove custom hwdb entries
+  file:
+    path: /etc/udev/hwdb.d/ansible.hwdb
+    state: absent
+  when: udevd_hwdb_entries is not defined
+  notify: Rebuild hwdb
+
+- name: Create rules
+  template:
+    src: rules.j2
+    dest: /etc/udev/rules.d/ansible.rules
+    mode: 0644
+    owner: root
+    group: root
+  when: udevd_rules is defined
+  notify: Trigger udev
+
+- name: Remove custom rules
+  file:
+    path: /etc/udev/rules.d/ansible.rules
+    state: absent
+  when: udevd_rules is not defined
+  notify: Trigger udev
