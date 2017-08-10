@@ -1,9 +1,11 @@
 ---
-- name: Rebuild hwdb
-  shell: "systemd-hwdb update && udevadm trigger"
+- name: Update hwdb
+  command: systemd-hwdb update
+  listen: Rebuild hwdb
 
-- name: Trigger udev
+- name: Trigger udev reload
   command: udevadm trigger
+  listen: Rebuild hwdb
 
 - name: Restart systemd-udevd
   service:
